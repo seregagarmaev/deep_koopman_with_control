@@ -39,16 +39,11 @@ def train_model(model, optimizer, dataloader):
     '''
     Trains model for a single epoch.
     '''
+    model.train()
     total_loss = 0
     mseLoss = nn.MSELoss()
 
     for Xs_k0, W_k0, theta_k0, Xs_k1 in dataloader:
-        # print('Xs_k0', Xs_k0.shape)
-        # print('W_k0', W_k0.shape)
-        # print('theta_k0', theta_k0.shape)
-        # print('Xs_k1', Xs_k1.shape)
-        # print('cat', torch.cat((Xs_k0, W_k0), dim=1).shape)
-
         Xs_k1_hat = model(torch.cat((Xs_k0, W_k0), dim=1), theta_k0)
 
         loss = mseLoss(Xs_k1, Xs_k1_hat)
@@ -59,3 +54,16 @@ def train_model(model, optimizer, dataloader):
         total_loss = total_loss + loss.detach()
 
     return total_loss
+
+def test_model(model, dataloader):
+    model.eval()
+    test_loss = 0
+    mseLoss = nn.MSELoss()
+
+    for Xs_k0, W_k0, theta_k0, Xs_k1 in dataloader:
+        Xs_k1_hat = model(torch.cat((Xs_k0, W_k0), dim=1), theta_k0)
+        loss = mseLoss(Xs_k1, Xs_k1_hat)
+        test_loss = test_loss + loss.detach()
+
+    return test_loss
+

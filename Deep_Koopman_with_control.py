@@ -1,5 +1,4 @@
 from config import *
-from datasets import *
 from models import *
 from utils import *
 
@@ -20,5 +19,10 @@ optimizer = torch.optim.Adam(model.parameters(), lr=model_params['lr'], weight_d
 
 print('Training the model')
 for epoch in range(1, model_params['epochs']+1):
-    loss = train_model(model, optimizer, training_loader)
-    print(f'Epoch {epoch}. Loss {loss}')
+    train_loss = train_model(model, optimizer, training_loader)
+    print(f'Epoch {epoch}. Train loss {train_loss}')
+
+    if (epoch % 5 == 0 or epoch == 1):
+        with torch.no_grad():
+            test_loss = test_model(model, testing_loader)
+            print(f'Epoch {epoch}. Test loss {test_loss}')
