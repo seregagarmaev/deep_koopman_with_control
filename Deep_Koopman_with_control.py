@@ -13,9 +13,12 @@ training_loader, testing_loader, (Xs_normalizer, w_normalizer, theta_normalizer)
     cycles_frac=cycles_frac,
 )
 
+
 print('Initializing a model')
-model = DeepKoopmanControl(model_params)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = DeepKoopmanControl(model_params).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=model_params['lr'], weight_decay=1e-7)
+
 
 print('Training the model')
 for epoch in range(1, model_params['epochs']+1):

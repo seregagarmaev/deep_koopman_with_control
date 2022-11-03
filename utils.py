@@ -40,11 +40,12 @@ def train_model(model, optimizer, dataloader):
     Trains model for a single epoch.
     '''
     model.train()
+    device = next(model.parameters()).device
     total_loss = 0
     mseLoss = nn.MSELoss()
 
     for Xs_k0, W_k0, theta_k0, Xs_k1 in dataloader:
-        Xs_k1_hat = model(torch.cat((Xs_k0, W_k0), dim=1), theta_k0)
+        Xs_k1_hat = model(torch.cat((Xs_k0, W_k0), dim=1).to(device), theta_k0.to(device))
 
         loss = mseLoss(Xs_k1, Xs_k1_hat)
         loss.backward()
@@ -57,11 +58,12 @@ def train_model(model, optimizer, dataloader):
 
 def test_model(model, dataloader):
     model.eval()
+    device = next(model.parameters()).device
     test_loss = 0
     mseLoss = nn.MSELoss()
 
     for Xs_k0, W_k0, theta_k0, Xs_k1 in dataloader:
-        Xs_k1_hat = model(torch.cat((Xs_k0, W_k0), dim=1), theta_k0)
+        Xs_k1_hat = model(torch.cat((Xs_k0, W_k0), dim=1).to(device), theta_k0.to(device))
         loss = mseLoss(Xs_k1, Xs_k1_hat)
         test_loss = test_loss + loss.detach()
 
