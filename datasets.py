@@ -1,7 +1,7 @@
 import h5py
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import StandardScaler
 
 
 class NCMAPSS:
@@ -127,11 +127,16 @@ class NCMAPSS:
         self.test = self.__shift_df(self.test, suffix=suffix)
         return None
 
-    def normalize(self, columns):
-        normalizer = Normalizer()
-        self.train[columns] = normalizer.fit_transform(self.train[columns])
-        self.test[columns] = normalizer.transform(self.test[columns])
-        return normalizer
+    def scale(self, columns):
+        scaler = StandardScaler()
+        self.train[columns] = scaler.fit_transform(self.train[columns])
+        self.test[columns] = scaler.transform(self.test[columns])
+        return scaler
 
     def get_data(self, columns):
         return self.train[columns], self.test[columns]
+
+    def get_eval_data(self, unit, cycle):
+        c1 = self.test['unit'] == unit
+        c2 = self.test['cycle'] == cycle
+        return self.test[c1 & c2]

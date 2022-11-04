@@ -15,7 +15,7 @@ class DeepKoopmanControl(nn.Module):
 
         self.K = nn.Linear(params['obsdim'], params['obsdim'])
 
-        self.B = nn.Linear(params['obsdim'], params['controldim'])
+        self.B = nn.Linear(params['controldim'], params['obsdim'])
 
         self.recovery = nn.Linear(params['obsdim'], params['outdim'])
 
@@ -26,5 +26,3 @@ class DeepKoopmanControl(nn.Module):
         yk1 = torch.add(Ky0, Bu)
         x1 = self.recovery(yk1)
         return x1
-
-
