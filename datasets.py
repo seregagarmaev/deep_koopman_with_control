@@ -127,8 +127,9 @@ class NCMAPSS:
         self.test = self.__shift_df(self.test, suffix=suffix)
         return None
 
-    def scale(self, columns):
-        scaler = StandardScaler()
+    def scale(self, columns, scaler=None):
+        if scaler is None:
+            scaler = StandardScaler()
         self.train[columns] = scaler.fit_transform(self.train[columns])
         self.test[columns] = scaler.transform(self.test[columns])
         return scaler
@@ -138,5 +139,7 @@ class NCMAPSS:
 
     def get_eval_data(self, unit, cycle):
         c1 = self.test['unit'] == unit
+        if cycle == 'all':
+            return self.test[c1]
         c2 = self.test['cycle'] == cycle
         return self.test[c1 & c2]

@@ -120,3 +120,21 @@ def plot_Xs(Xs, Xs_hat, cols):
         plt.savefig(f'plots/forward_prediction_{col}.png', bbox_inches='tight')
         plt.close()
     return None
+
+def prepare_data_for_inverse(**params):
+    dataset = NCMAPSS(params['path'])
+    dataset.scale(dataset.X_s_var, params['Xs_scaler'])
+    dataset.scale(dataset.W_var, params['w_scaler'])
+    dataset.scale(dataset.T_var, params['theta_scaler'])
+
+    dataset.shift_data()
+    dataset.keep_regime(params['regime'])
+
+    data = dataset.get_eval_data(params['eval_unit'], cycle='all')
+    Xs_k0 = data[dataset.X_s_var]
+    W_k0 = data[dataset.W_var]
+    theta_k0 = data[dataset.T_var]
+    Xs_k1 = data[[col + dataset.shift_suffix for col in dataset.X_s_var]]
+    cycle = data[['cycle']]
+
+    return Xs_k0, W_k0, theta_k0, Xs_k1, cycle

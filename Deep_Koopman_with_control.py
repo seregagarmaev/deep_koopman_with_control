@@ -1,6 +1,7 @@
 from config import *
 from models import *
 from utils import *
+import joblib
 
 
 print('Preparing training data')
@@ -14,6 +15,10 @@ training_loader, testing_loader, eval_data, (Xs_scaler, w_scaler, theta_scaler) 
     eval_unit=eval_unit,
     eval_cycle=eval_cycle,
 )
+joblib.dump(Xs_scaler, 'models/Xs_scaler.save')
+joblib.dump(w_scaler, 'models/w_scaler.save')
+joblib.dump(theta_scaler, 'models/theta_scaler.save')
+
 
 
 print('Initializing a model')
