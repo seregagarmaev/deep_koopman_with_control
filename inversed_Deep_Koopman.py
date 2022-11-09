@@ -26,7 +26,7 @@ Xs_k0, W_k0, theta_k0, Xs_k1, cycle = prepare_data_for_inverse(
 print('Reading the model')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = DeepKoopmanControl(model_params).to(device)
-model.load_state_dict(torch.load('models/model_epoch_50.pth'))
+model.load_state_dict(torch.load('models/model_epoch_100.pth'))
 
 
 print('Evaluating the model')
@@ -44,27 +44,27 @@ theta_df = pd.concat((
     cycle.reset_index(drop=True),
 ), axis=1)
 
-# theta_df_mean = theta_df.groupby('cycle').mean()
-# theta_df_std = theta_df.groupby('cycle').std()
-#
-# print('Visualizing the results')
-# for i, health_parameter in enumerate(theta_k0.columns):
-#     plt.figure(figsize=(10, 5))
-#     plt.plot(theta_df_mean[health_parameter], label=r'$\theta$')
-#     plt.plot(theta_df_mean[health_parameter + '_hat'], alpha=0.8, label=r'$\^\theta$', color='gray')
-#     plt.fill_between(
-#         theta_df_mean.index,
-#         theta_df_mean[health_parameter + '_hat'] - theta_df_std[health_parameter + '_hat'],
-#         theta_df_mean[health_parameter + '_hat'] + theta_df_std[health_parameter + '_hat'],
-#         alpha=0.5,
-#         color='gray',
-#     )
-#     plt.grid()
-#     plt.title(health_parameter)
-#     plt.legend()
-#     plt.xlabel('cycle')
-#     plt.savefig(f'plots/{health_parameter}.png', bbox_inches='tight')
-#     plt.close()
+theta_df_mean = theta_df.groupby('cycle').mean()
+theta_df_std = theta_df.groupby('cycle').std()
+
+print('Visualizing the results')
+for i, health_parameter in enumerate(theta_k0.columns):
+    plt.figure(figsize=(10, 5))
+    plt.plot(theta_df_mean[health_parameter], label=r'$\theta$')
+    plt.plot(theta_df_mean[health_parameter + '_hat'], alpha=0.8, label=r'$\^\theta$', color='gray')
+    plt.fill_between(
+        theta_df_mean.index,
+        theta_df_mean[health_parameter + '_hat'] - theta_df_std[health_parameter + '_hat'],
+        theta_df_mean[health_parameter + '_hat'] + theta_df_std[health_parameter + '_hat'],
+        alpha=0.5,
+        color='gray',
+    )
+    plt.grid()
+    plt.title(health_parameter)
+    plt.legend()
+    plt.xlabel('cycle')
+    plt.savefig(f'plots/{health_parameter}.png', bbox_inches='tight')
+    plt.close()
 
 
 theta_sample = theta_df.sample(n=1000)
